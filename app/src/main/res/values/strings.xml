@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Warren Chat Demo</string>
     <string name="start">Começar</string>
+
+    <string name="your_name">Seu nome</string>
+    <string name="your_email">Seu nome</string>
 </resources>

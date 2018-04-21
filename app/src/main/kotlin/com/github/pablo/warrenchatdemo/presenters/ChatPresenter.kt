@@ -22,6 +22,13 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
         loadQuestion()
     }
 
+    fun onClickSend(answer: String) {
+        currentQuestion?.id?.let {
+            userAnswer.put(it, answer)
+            loadQuestion()
+        }
+    }
+
     private fun loadQuestion() {
         disposable = messagesApi.answer(userAnswer)
                 .flatMapObservable {

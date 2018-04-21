@@ -9,6 +9,7 @@ class UserAnswer(
     private val context: String = "suitability"
 
     fun put(id: String, answer: Any) {
+        this.id = id
         answers[id] = answer
     }
 }

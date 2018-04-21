@@ -14,8 +14,13 @@ class ChatAdapter : BaseAdapter<ChatMessage, ChatViewHolder>(){
 
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
         list?.getOrNull(position)?.let {
-            holder.bind(it)
+            val showIcon = position == 0 || list.previousWasFromOtherSender(position, it.fromUser)
+            holder.bind(it, showIcon)
         }
+    }
+
+    private fun List<ChatMessage>?.previousWasFromOtherSender(index: Int, fromUser: Boolean): Boolean {
+        return this?.getOrNull(index-1)?.fromUser != fromUser
     }
 
 }

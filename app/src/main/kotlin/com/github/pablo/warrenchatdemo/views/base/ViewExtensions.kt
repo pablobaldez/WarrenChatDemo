@@ -1,7 +1,6 @@
 package com.github.pablo.warrenchatdemo.views.base
 
 import android.databinding.BindingAdapter
-import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.widget.CardView
 import android.view.Gravity
@@ -13,14 +12,25 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.github.pablo.warrenchatdemo.R
 
+@BindingAdapter("isUserChatTextColor")
+fun TextView.setUserChatTextColor(chatMessageFromUser: Boolean) {
+    val colorRes = if(chatMessageFromUser) {
+        R.color.black
+    } else {
+        R.color.white
+    }
+    val color = resources.getColorCodeFromRes(colorRes)
+    setTextColor(color)
+}
+
 @BindingAdapter("isUserChatBackground")
 fun View.setUserChatBackground(chatMessageFromUser: Boolean) {
     val colorRes = if(chatMessageFromUser) {
-        android.R.color.darker_gray
+        R.color.light_gray
     } else {
-        android.R.color.white
+        R.color.colorPrimary
     }
-    val color = ResourcesCompat.getColor(resources, colorRes, null)
+    val color = resources.getColorCodeFromRes(colorRes)
     if(this is CardView) {
         setCardBackgroundColor(color)
     } else {

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.view.ViewTreeObserver
 import com.github.pablo.warrenchatdemo.R
 import com.github.pablo.warrenchatdemo.injection.ActivityComponent
 import com.github.pablo.warrenchatdemo.model.InputMask
@@ -19,6 +21,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private val recyclerView by lazy {
         findViewById<RecyclerView>(R.id.recycler_view)
     }
+    private val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+        // TODO show input with delayed animation
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,18 +46,17 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter?.onDetachView()
     }
 
-    override fun addMessage(message: String) {
-        adapter.list?.add(ChatMessage(message, false))
+    override fun addMessage(message: ChatMessage) {
+        adapter.list?.add(message)
     }
 
     override fun showInputArea(inputMask: InputMask) {
-        // TODO subir com animação
         adapter.notifyDataSetChanged()
+        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     override fun hideInputArea() {
         // TODO descer com animação
-
     }
 
     override fun showErrorMessage() {

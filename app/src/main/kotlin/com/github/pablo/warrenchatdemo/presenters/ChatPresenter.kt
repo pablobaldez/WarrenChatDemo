@@ -38,7 +38,7 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
 
     private fun onNext(message: Message) {
         message.value?.let {
-            chatView?.addMessage(ChatMessage(it, false))
+            chatView?.addMessage(ChatMessage(it, it.startsWith("A")))
         }
     }
 

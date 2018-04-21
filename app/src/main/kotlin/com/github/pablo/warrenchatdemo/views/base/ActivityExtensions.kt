@@ -1,4 +1,4 @@
-package com.github.pablo.warrenchatdemo.utils
+package com.github.pablo.warrenchatdemo.views.base
 
 import android.app.Activity
 import android.content.Intent

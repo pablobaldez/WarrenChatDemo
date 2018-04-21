@@ -1,7 +1,7 @@
 package com.github.pablo.warrenchatdemo.injection
 
 import com.github.pablo.warrenchatdemo.api.MessagesApi
-import com.github.pablo.warrenchatdemo.utils.build
+import com.github.pablo.warrenchatdemo.api.build
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

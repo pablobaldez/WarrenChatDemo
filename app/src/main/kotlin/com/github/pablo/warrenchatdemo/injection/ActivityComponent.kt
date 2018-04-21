@@ -1,7 +1,7 @@
 package com.github.pablo.warrenchatdemo.injection
 
 import android.app.Activity
-import com.github.pablo.warrenchatdemo.utils.warrenDemoApp
+import com.github.pablo.warrenchatdemo.views.base.warrenDemoApp
 import com.github.pablo.warrenchatdemo.views.chat.ChatActivity
 import dagger.Subcomponent
 

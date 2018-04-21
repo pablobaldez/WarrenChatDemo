@@ -1,5 +1,6 @@
-package com.github.pablo.warrenchatdemo.utils
+package com.github.pablo.warrenchatdemo.api
 
+import com.github.pablo.warrenchatdemo.utils.logD
 import com.google.gson.Gson
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

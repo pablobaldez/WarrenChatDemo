@@ -1,10 +1,10 @@
 package com.github.pablo.warrenchatdemo.views.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
-import com.github.pablo.warrenchatdemo.utils.logD
 import java.util.*
 
 
@@ -85,8 +85,8 @@ class TypeWriterTextView(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     private inner class TextAdder(private var textToAdd: CharSequence, speed: Long, doneRunnable: Runnable) : Repeater(doneRunnable, speed) {
 
+        @SuppressLint("SetTextI18n")
         override fun run() {
-            logD("text to add $textToAdd")
             if (textToAdd.isEmpty()) {
                 done()
                 return
@@ -105,7 +105,6 @@ class TypeWriterTextView(context: Context, attrs: AttributeSet?, defStyleAttr: I
         : Repeater(doneRunnable, speed) {
 
         override fun run() {
-            logD("text to remove $textToRemove")
             if (textToRemove.isEmpty()) {
                 done()
                 return

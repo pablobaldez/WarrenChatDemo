@@ -35,6 +35,7 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
                     currentQuestion = it
                     Observable.fromIterable(it.messages)
                 }
+                .doOnNext { MessageMapper.map(it) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {

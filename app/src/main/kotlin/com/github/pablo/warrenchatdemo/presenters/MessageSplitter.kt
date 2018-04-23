@@ -16,11 +16,13 @@ object MessageSplitter {
             throw IllegalArgumentException("blank message")
         }
         val delays = extractDelays(message)
-        val parts = if(delays.isEmpty()) {
+        val parts = if(delays.isNotEmpty()) {
             val texts = splitTexts(message)
             joinTextAndDelays(delays, texts, defaultDelayToUse)
         } else {
-            arrayListOf(DelayedText(message, defaultDelayToUse))
+            splitTexts(message).map {
+                DelayedText(it.first, defaultDelayToUse, it.second)
+            }
         }
         return DelayedMessage(parts)
     }
@@ -42,7 +44,16 @@ object MessageSplitter {
         val split = message.split(regex)
         val texts = ArrayList<Pair<String, Boolean>>()
         split.forEach {
-
+            if(it.isNotEmpty()) {
+                if (it.trim().startsWith("<erase>")) {
+                    val text = it.replace("<erase>", "", true)
+                            .replace("  ", " ")
+                    texts.add(text to false)
+                    texts.add(text to true)
+                } else {
+                    texts.add(it to true)
+                }
+            }
         }
         return texts
     }
@@ -50,19 +61,19 @@ object MessageSplitter {
     private fun joinTextAndDelays(delays: List<Long>,
                                   textsAndActions: List<Pair<String, Boolean>>,
                                   defaultDelayToUse: Long): List<DelayedText> {
-        if(delays.size > textsAndActions.size) {
-            throw IllegalArgumentException("invalid format of message")
-        }
         val parts = ArrayList<DelayedText>()
         var previousIsErase = false
-        textsAndActions.forEachIndexed { index, text ->
-            if(previousIsErase) {
-                val delay = delays.getOrElse(index - 1, {defaultDelayToUse})
+        var delayIndex = 0
+        textsAndActions.forEach { text ->
+            val delayedText = if(previousIsErase) {
+                val delay = delays.getOrElse(delayIndex - 1, {defaultDelayToUse})
                 DelayedText(text.first, delay, true)
             } else {
-                val delay = delays.getOrElse(index, {defaultDelayToUse})
+                val delay = delays.getOrElse(delayIndex, {defaultDelayToUse})
+                delayIndex++
                 DelayedText(text.first, delay, text.second)
             }
+            parts.add(delayedText)
             previousIsErase = !text.second
         }
         return parts

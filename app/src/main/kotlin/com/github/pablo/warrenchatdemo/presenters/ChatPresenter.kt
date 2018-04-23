@@ -36,7 +36,7 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
                     Observable.fromIterable(it.messages)
                 }
                 .map { message -> message.value }
-                .doOnNext { MessageSplitter.map(it!!, 1000L) }
+                .doOnNext { MessageSplitter.split(it!!, 1000L) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {

@@ -17,30 +17,6 @@ class MessageSplitterTest {
     }
 
     @Test
-    fun testInvalidDelay() {
-        val text = "Antes de começarmos, como posso te chamar? :) ^300x"
-        assertFailsWith<NumberFormatException> {
-            MessageSplitter.split(text, 200)
-        }
-    }
-
-    @Test
-    fun testTextWithOnlyDelay() {
-        val text = "^1000"
-        assertFailsWith<IllegalArgumentException> {
-            MessageSplitter.split(text, 200)
-        }
-    }
-
-    @Test
-    fun testTextWithMoreDelaysThanTexts() {
-        val text = "Antes de começarmos, ^120 ^300 como posso te chamar? :)"
-        assertFailsWith<IllegalArgumentException> {
-            MessageSplitter.split(text, 100)
-        }
-    }
-
-    @Test
     fun testTextWithoutDelay() {
         val text = "Antes de começarmos, como posso te chamar? :)"
         val delayedMessage = MessageSplitter.split(text, 300L)
@@ -62,7 +38,7 @@ class MessageSplitterTest {
     fun testSinglePairOfDelayedText() {
         val text = "Antes de começarmos, como posso te chamar? :) ^200"
         val delayedMessage = MessageSplitter.split(text, 300L)
-        assertDelayedMessage(delayedMessage,DelayedText(text, 200L))
+        assertDelayedMessage(delayedMessage,DelayedText("Antes de começarmos, como posso te chamar? :)", 200L))
     }
 
     @Test

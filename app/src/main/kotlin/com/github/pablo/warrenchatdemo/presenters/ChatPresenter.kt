@@ -35,13 +35,14 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
                     currentQuestion = it
                     Observable.fromIterable(it.messages)
                 }
-                .doOnNext { MessageMapper.map(it) }
+                .map { message -> message.value }
+                .doOnNext { MessageSplitter.map(it!!, 1000L) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
                     chatView?.hideInputArea()
                 }
-                .subscribe({ onNext(it) }, { onError() }, { onCompleteQuestionLoad() })
+                .subscribe({  }, { onError() }, { onCompleteQuestionLoad() })
     }
 
     private fun onNext(message: Message) {

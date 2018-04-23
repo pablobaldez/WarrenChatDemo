@@ -51,11 +51,10 @@
                     android:layout_marginBottom="@dimen/margin_medium"
                     />
 
-                <TextView
+                <com.github.pablo.warrenchatdemo.views.widgets.TypeWriterTextView
                     android:id="@+id/message_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{chatMessage.message}"
                     app:isUserChatTextColor="@{chatMessage.fromUser}"
                     tools:text="sample text" />
 

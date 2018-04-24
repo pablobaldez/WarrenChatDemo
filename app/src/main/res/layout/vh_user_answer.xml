@@ -14,6 +14,7 @@
         android:background="@drawable/shape_circular_black"
         android:textStyle="bold"
         android:maxLength="1"
+        android:textAllCaps="true"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"

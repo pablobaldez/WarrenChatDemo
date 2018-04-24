@@ -33,6 +33,7 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
         val list = LinkedList<DelayedMessage>()
         disposable = messagesApi.answer(userAnswer)
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .flatMapObservable {
                     currentQuestion = it
                     Observable.fromIterable(it.messages)

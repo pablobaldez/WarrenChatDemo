@@ -9,7 +9,7 @@ object MessageSplitter {
 
     /**
      * @throws NumberFormatException if the delay is in a wrong format
-     * @throws IllegalArgumentException if the message empty or if have more delays than messages
+     * @throws IllegalArgumentException if the message empty
      */
     fun split(message: String, defaultDelayToUse: Long): DelayedMessage {
         if(message.isBlank()) {

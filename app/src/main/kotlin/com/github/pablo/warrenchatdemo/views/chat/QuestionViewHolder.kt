@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.pablo.warrenchatdemo.R
 import com.github.pablo.warrenchatdemo.presenters.DelayedMessage
+import com.github.pablo.warrenchatdemo.utils.logD
 import com.github.pablo.warrenchatdemo.views.widgets.TypeWriterTextView
 
 class QuestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,7 +19,8 @@ class QuestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 if(delayedText.actionWrite) {
                     typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
                 } else {
-                    typeWriterTextView.erase(delayedText.text).pause(delayedText.delay)
+                    typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
+                            .erase(delayedText.text).pause(delayedText.delay)
                 }
             }
         }

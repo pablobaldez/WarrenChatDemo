@@ -3,7 +3,7 @@ package com.github.pablo.warrenchatdemo.presenters
 import java.util.regex.Pattern
 
 /**
- * A file to map a Message class into a list of texts and delays to be shown with animation
+ * An object to map a Message class into a list of texts and delays to be shown with animation
  */
 object MessageSplitter {
 
@@ -40,41 +40,36 @@ object MessageSplitter {
     }
 
     private fun splitTexts(message: String): List<Pair<String, Boolean>> {
-        val regex = Regex(" \\^\\w+")
-        val split = message.split(regex)
-        val texts = ArrayList<Pair<String, Boolean>>()
-        split.forEach {
-            if(it.isNotEmpty()) {
-                if (it.trim().startsWith("<erase>")) {
-                    val text = it.replace("<erase>", "", true)
-                            .replace("  ", " ")
-                    texts.add(text to false)
-                    texts.add(text to true)
+        val eraseSplit = message.split("<erase>")
+        val texts: List<Pair<String, Boolean>>
+        if(eraseSplit.size == 1) {
+            texts = splitTextsByDelay(message).map { Pair(it, true) }
+        } else {
+            texts = ArrayList()
+            eraseSplit.map { splitTextsByDelay(it) }.forEachIndexed { index, list ->
+                val splitLists = if(index == 0) {
+                    list.map { Pair(it, false) }
                 } else {
-                    texts.add(it to true)
+                    list.map { Pair(it, true) }
                 }
+                texts.addAll(splitLists)
             }
         }
         return texts
+    }
+
+    private fun splitTextsByDelay(message: String): List<String> {
+        val regex = Regex(" \\^\\w+")
+        return message.split(regex).filter { it.isNotBlank() }.map { it.replace("  ", " ") }
     }
 
     private fun joinTextAndDelays(delays: List<Long>,
                                   textsAndActions: List<Pair<String, Boolean>>,
                                   defaultDelayToUse: Long): List<DelayedText> {
         val parts = ArrayList<DelayedText>()
-        var previousIsErase = false
-        var delayIndex = 0
-        textsAndActions.forEach { text ->
-            val delayedText = if(previousIsErase) {
-                val delay = delays.getOrElse(delayIndex - 1, {defaultDelayToUse})
-                DelayedText(text.first, delay, true)
-            } else {
-                val delay = delays.getOrElse(delayIndex, {defaultDelayToUse})
-                delayIndex++
-                DelayedText(text.first, delay, text.second)
-            }
-            parts.add(delayedText)
-            previousIsErase = !text.second
+        textsAndActions.forEachIndexed { index, pair ->
+            val delay = delays.getOrElse(index, {defaultDelayToUse})
+            parts.add(DelayedText(pair.first, delay, pair.second))
         }
         return parts
     }

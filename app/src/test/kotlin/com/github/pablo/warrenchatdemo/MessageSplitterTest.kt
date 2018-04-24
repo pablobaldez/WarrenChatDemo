@@ -54,12 +54,11 @@ class MessageSplitterTest {
 
     @Test
     fun testEraseOnly() {
-        val text = "<erase>(ops... chat errado) :D ^200"
+        val text = "(ops... chat errado) :D ^200 <erase>"
         val delayedMessage = MessageSplitter.split(text, 300L)
         assertDelayedMessage(
                 delayedMessage,
-                DelayedText("(ops... chat errado) :D", 200, false),
-                DelayedText("(ops... chat errado) :D", 200, true)
+                DelayedText("(ops... chat errado) :D", 200, false)
         )
     }
 
@@ -69,45 +68,8 @@ class MessageSplitterTest {
         val delayedMessage = MessageSplitter.split(text, 300L)
         assertDelayedMessage(
                 delayedMessage,
-                DelayedText("Você prefere Terror ou Suspense?", 1000, true),
-                DelayedText(" (ops... chat errado) :D", 200, false),
-                DelayedText(" (ops... chat errado) :D", 200, true)
-        )
-    }
-
-    @Test
-    fun testEraseWithoutDelay() {
-        val text = "<erase>(ops... chat errado) :D"
-        val delayedMessage = MessageSplitter.split(text, 300)
-        assertDelayedMessage(
-                delayedMessage,
-                DelayedText("(ops... chat errado) :D", 300, false),
-                DelayedText("(ops... chat errado) :D", 300, true)
-        )
-    }
-
-    @Test
-    fun testStartingWithErasing() {
-        val text = "<erase>(ops... chat errado) :D ^200 Você prefere Terror ou Suspense? ^1000"
-        val delayedMessage = MessageSplitter.split(text, 300)
-        assertDelayedMessage(
-                delayedMessage,
-                DelayedText("(ops... chat errado) :D", 200, false),
-                DelayedText("(ops... chat errado) :D", 200, true),
-                DelayedText(" Você prefere Terror ou Suspense?", 1000, true)
-        )
-    }
-
-    @Test
-    fun testEraseAtMiddle() {
-        val text = "Você prefere Terror ou Suspense? ^1000  <erase>(ops... chat errado) :D ^200 Desculpe ^900"
-        val delayedMessage = MessageSplitter.split(text, 300)
-        assertDelayedMessage(
-                delayedMessage,
-                DelayedText("Você prefere Terror ou Suspense?", 1000, true),
-                DelayedText(" (ops... chat errado) :D", 200, false),
-                DelayedText(" (ops... chat errado) :D", 200, true),
-                DelayedText(" Desculpe", 900, true)
+                DelayedText("Você prefere Terror ou Suspense?", 1000, false),
+                DelayedText("(ops... chat errado) :D", 200, true)
         )
     }
 

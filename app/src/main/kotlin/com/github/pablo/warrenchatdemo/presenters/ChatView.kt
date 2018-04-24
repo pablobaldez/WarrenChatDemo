@@ -5,11 +5,13 @@ import java.util.*
 
 interface ChatView {
 
-    fun showMessages(messages: Queue<DelayedMessage>, firstAnswer: String, secondAnswer: String)
+    fun showUserInitial(userInitial: String)
 
-    fun showMessages(messages: Queue<DelayedMessage>, mask: InputMask)
+    fun showMessages(messages: Queue<MessageItem>, firstAnswer: String, secondAnswer: String)
 
-    fun hideAnswerArea()
+    fun showMessages(messages: Queue<MessageItem>, mask: InputMask)
+
+    fun showUserAnswer(item: MessageItem)
 
     fun showErrorMessage()
 

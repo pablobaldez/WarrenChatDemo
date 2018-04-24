@@ -11,7 +11,7 @@ object MessageSplitter {
      * @throws NumberFormatException if the delay is in a wrong format
      * @throws IllegalArgumentException if the message empty
      */
-    fun split(message: String, defaultDelayToUse: Long): DelayedMessage {
+    fun split(message: String, defaultDelayToUse: Long): MessageItem {
         if(message.isBlank()) {
             throw IllegalArgumentException("blank message")
         }
@@ -24,7 +24,7 @@ object MessageSplitter {
                 DelayedText(it.first, defaultDelayToUse, it.second)
             }
         }
-        return DelayedMessage(parts)
+        return MessageItem(parts = parts)
     }
 
     private fun extractDelays(message: String): List<Long> {

@@ -23,7 +23,10 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
     }
 
     fun onClickSend(answer: String) {
-        chatView?.hideAnswerArea()
+        if(currentQuestion?.id == QUESTION_NAME_ID && answer.isNotEmpty()) {
+            chatView?.showUserInitial(Character.toString(answer[0]))
+        }
+        formatAnswer(answer)
         currentQuestion?.id?.let {
             userAnswer.put(it, answer)
             loadQuestion()
@@ -39,8 +42,8 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
     }
 
     private fun onClickButtonAnswer(index: Int) {
-        chatView?.hideAnswerArea()
         currentQuestion?.id?.let {
+            formatAnswer(currentQuestion?.getButtonTitle(index) ?: "")
             val answer = currentQuestion?.getButtonValue(index)
             if(answer != null) {
                 userAnswer.put(it, answer)
@@ -49,8 +52,19 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
         }
     }
 
+    private fun formatAnswer(answer: String) {
+        val response = currentQuestion?.getResponse()
+        val finalAnswer = if(response != null) {
+            val regex = Regex("\\{\\{.*?\\}\\}")
+            response.replace(regex, answer)
+        } else {
+            answer
+        }
+        chatView?.showUserAnswer(MessageItem(answer = finalAnswer))
+    }
+
     private fun loadQuestion() {
-        val list = LinkedList<DelayedMessage>()
+        val list = LinkedList<MessageItem>()
         disposable = messagesApi.answer(userAnswer)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -71,7 +85,7 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
                 )
     }
 
-    private fun onCompleteQuestionLoad(list: LinkedList<DelayedMessage>) {
+    private fun onCompleteQuestionLoad(list: LinkedList<MessageItem>) {
         val inputMask = currentQuestion?.getMask()
         if(inputMask != null) {
             chatView?.showMessages(list, inputMask)
@@ -93,6 +107,7 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
 
     companion object {
         const val DEFAULT_WRITER_ANIMATION_DELAY = 1000L
+        const val QUESTION_NAME_ID = "question_name"
     }
 
 }

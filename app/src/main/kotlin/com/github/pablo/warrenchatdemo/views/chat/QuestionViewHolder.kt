@@ -5,16 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.pablo.warrenchatdemo.R
-import com.github.pablo.warrenchatdemo.presenters.DelayedMessage
-import com.github.pablo.warrenchatdemo.utils.logD
+import com.github.pablo.warrenchatdemo.presenters.DelayedText
 import com.github.pablo.warrenchatdemo.views.widgets.TypeWriterTextView
 
-class QuestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class QuestionViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val typeWriterTextView: TypeWriterTextView? by lazy { itemView.findViewById<TypeWriterTextView>(R.id.text) }
 
-    fun bind(delayedMessage: DelayedMessage) {
-        delayedMessage.parts.forEach { delayedText ->
+    fun bind(parts: List<DelayedText>) {
+        parts.forEach { delayedText ->
             typeWriterTextView?.let { typeWriterTextView ->
                 if(delayedText.actionWrite) {
                     typeWriterTextView.type(delayedText.text).pause(delayedText.delay)

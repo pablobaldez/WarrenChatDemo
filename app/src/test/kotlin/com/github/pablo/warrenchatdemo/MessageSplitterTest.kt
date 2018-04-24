@@ -1,6 +1,6 @@
 package com.github.pablo.warrenchatdemo
 
-import com.github.pablo.warrenchatdemo.presenters.DelayedMessage
+import com.github.pablo.warrenchatdemo.presenters.MessageItem
 import com.github.pablo.warrenchatdemo.presenters.DelayedText
 import com.github.pablo.warrenchatdemo.presenters.MessageSplitter
 import org.junit.Test
@@ -74,11 +74,11 @@ class MessageSplitterTest {
     }
 
     private fun assertDelayedMessage(
-            delayedMessage: DelayedMessage,
+            messageItem: MessageItem,
             vararg expectedParts: DelayedText) {
 
-        assertEquals(expectedParts.size, delayedMessage.parts.size)
-        delayedMessage.parts.forEachIndexed { index, part ->
+        assertEquals(expectedParts.size, messageItem.parts.size)
+        messageItem.parts.forEachIndexed { index, part ->
             assertEquals(expectedParts[index].text, part.text)
             assertEquals(expectedParts[index].delay, part.delay)
             assertEquals(expectedParts[index].actionWrite, part.actionWrite)

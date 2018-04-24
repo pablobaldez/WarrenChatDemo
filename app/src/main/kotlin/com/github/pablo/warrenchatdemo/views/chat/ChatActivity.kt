@@ -18,7 +18,7 @@ import com.github.pablo.warrenchatdemo.injection.ActivityComponent
 import com.github.pablo.warrenchatdemo.model.InputMask
 import com.github.pablo.warrenchatdemo.presenters.ChatPresenter
 import com.github.pablo.warrenchatdemo.presenters.ChatView
-import com.github.pablo.warrenchatdemo.presenters.DelayedMessage
+import com.github.pablo.warrenchatdemo.presenters.MessageItem
 import com.github.pablo.warrenchatdemo.views.base.*
 
 import java.util.*
@@ -51,7 +51,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     private fun setupRecyclerView() {
         adapter = ChatAdapter { showBottomLayout() }
-        adapter.list = ArrayList()
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
     }
@@ -81,14 +80,14 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter?.onDetachView()
     }
 
-    override fun showMessages(messages: Queue<DelayedMessage>, mask: InputMask) {
+    override fun showMessages(messages: Queue<MessageItem>, mask: InputMask) {
         currentInputMask = mask
         adapter.messageQueue = messages
         currentFirstAnswer = null
         currentSecondAnswer = null
     }
 
-    override fun showMessages(messages: Queue<DelayedMessage>, firstAnswer: String, secondAnswer: String) {
+    override fun showMessages(messages: Queue<MessageItem>, firstAnswer: String, secondAnswer: String) {
         currentInputMask = null
         currentFirstAnswer = firstAnswer
         currentSecondAnswer = secondAnswer
@@ -122,8 +121,13 @@ class ChatActivity : AppCompatActivity(), ChatView {
         applyConstraintSet(R.layout.activity_chat_options_expanded)
     }
 
-    override fun hideAnswerArea() {
+    override fun showUserInitial(userInitial: String) {
+        UserAnswerViewHolder.userInitial = userInitial
+    }
+
+    override fun showUserAnswer(item: MessageItem) {
         applyConstraintSet(R.layout.activity_chat)
+        adapter.add(item)
     }
 
     private fun applyConstraintSet(@LayoutRes layoutResId: Int) {

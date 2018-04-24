@@ -9,4 +9,5 @@
     <dimen name="thumb_size">48dp</dimen>
     <dimen name="chat_message_horizontal_margin">50dp</dimen>
     <dimen name="input_bar_heigth">60dp</dimen>
+    <dimen name="icon_size">32dp</dimen>
 </resources>

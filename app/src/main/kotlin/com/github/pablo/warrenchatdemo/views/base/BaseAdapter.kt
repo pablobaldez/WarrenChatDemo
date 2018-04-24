@@ -4,15 +4,13 @@ import android.support.v7.widget.RecyclerView
 
 abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
 
-    var list: MutableList<T>? = null
+    var list: MutableList<T> = ArrayList()
 
-    override fun getItemCount(): Int = list.orEmpty().size
+    override fun getItemCount(): Int = list.size
 
     fun add(item: T) {
-        list?.let {
-            it.add(item)
-            notifyItemInserted(it.size)
-        }
+        list.add(item)
+        notifyItemInserted(list.size)
     }
 
 }

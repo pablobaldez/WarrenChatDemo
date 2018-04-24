@@ -1,5 +1,6 @@
 package com.github.pablo.warrenchatdemo.views.base
 
+import android.support.v7.widget.RecyclerView
 import android.text.InputType
 import android.widget.EditText
 import android.widget.TextView
@@ -34,6 +35,10 @@ fun TextView.setOnClickImeOptionsClickListener(imeId: Int, onClick: () -> Unit) 
             true
         } else false
     }
+}
+
+fun RecyclerView.scrollToBottom() {
+    adapter?.let { smoothScrollToPosition(adapter.itemCount) }
 }
 
 val TextView.string get() = text.toString()

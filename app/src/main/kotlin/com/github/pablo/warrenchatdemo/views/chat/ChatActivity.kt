@@ -5,9 +5,9 @@ import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
 import android.support.design.widget.FloatingActionButton
+import android.support.transition.AutoTransition
 import android.support.transition.TransitionManager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -20,7 +20,7 @@ import com.github.pablo.warrenchatdemo.presenters.ChatPresenter
 import com.github.pablo.warrenchatdemo.presenters.ChatView
 import com.github.pablo.warrenchatdemo.presenters.MessageItem
 import com.github.pablo.warrenchatdemo.views.base.*
-
+import com.github.pablo.warrenchatdemo.views.widgets.SmoothScrollLayoutManager
 import java.util.*
 import javax.inject.Inject
 
@@ -50,20 +50,27 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     private fun setupRecyclerView() {
-        adapter = ChatAdapter { showBottomLayout() }
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = ChatAdapter {
+            showBottomLayout()
+            recyclerView.scrollToBottom()
+        }
+        val layoutManager = SmoothScrollLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }
 
     private fun setupSendClickListener() {
         sendButton.setOnClickListener {
-            hideKeyboard()
-            presenter?.onClickSend(answerEditText.string)
+            onClickSend()
         }
         answerEditText.setOnClickImeOptionsClickListener(EditorInfo.IME_ACTION_SEND) {
-            hideKeyboard()
-            presenter?.onClickSend(answerEditText.string)
+            onClickSend()
         }
+    }
+
+    private fun onClickSend() {
+        hideKeyboard()
+        presenter?.onClickSend(answerEditText.string)
     }
 
     private fun setupOptionsClickListeners() {
@@ -128,11 +135,14 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun showUserAnswer(item: MessageItem) {
         applyConstraintSet(R.layout.activity_chat)
         adapter.add(item)
+        recyclerView.scrollToBottom()
     }
 
     private fun applyConstraintSet(@LayoutRes layoutResId: Int) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(this, layoutResId)
+        val transition = AutoTransition()
+        transition.startDelay = 100
         TransitionManager.beginDelayedTransition(rootLayout)
         constraintSet.applyTo(rootLayout)
     }

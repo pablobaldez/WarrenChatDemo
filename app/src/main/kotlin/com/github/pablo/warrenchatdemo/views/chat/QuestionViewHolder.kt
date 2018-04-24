@@ -13,6 +13,9 @@ class QuestionViewHolder private constructor(itemView: View) : RecyclerView.View
     val typeWriterTextView: TypeWriterTextView? by lazy { itemView.findViewById<TypeWriterTextView>(R.id.text) }
 
     fun bind(parts: List<DelayedText>) {
+        if(typeWriterTextView?.text?.isNotEmpty() == true) {
+            return
+        }
         parts.forEach { delayedText ->
             typeWriterTextView?.let { typeWriterTextView ->
                 if(delayedText.actionWrite) {

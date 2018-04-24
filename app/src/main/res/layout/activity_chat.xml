@@ -11,6 +11,9 @@
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="true"
+        android:paddingBottom="@dimen/medium"
+        android:paddingTop="@dimen/small"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -47,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            app:fabSize="mini"
             android:layout_marginEnd="@dimen/small_xx"
             android:layout_marginRight="@dimen/small_xx"
             android:layout_marginLeft="@dimen/small"
@@ -71,16 +75,34 @@
             android:id="@+id/opt_1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/thumb_size"
-            android:text="OPÇÃO 1"
+            tools:text="OPÇÃO 1"
             style="@style/OptionsStyle"/>
 
         <TextView
             android:id="@+id/opt_2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/thumb_size"
-            android:text="OPÇÃO 2"
+            tools:text="OPÇÃO 2"
             style="@style/OptionsStyle"/>
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/final_answer_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/red"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/final_answer_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/thumb_size"
+            tools:text="OPÇÃO 2"
+            style="@style/OptionsStyle"/>
+
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

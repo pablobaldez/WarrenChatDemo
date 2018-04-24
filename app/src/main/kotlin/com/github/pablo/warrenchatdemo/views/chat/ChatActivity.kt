@@ -19,6 +19,7 @@ import com.github.pablo.warrenchatdemo.model.InputMask
 import com.github.pablo.warrenchatdemo.presenters.ChatPresenter
 import com.github.pablo.warrenchatdemo.presenters.ChatView
 import com.github.pablo.warrenchatdemo.presenters.MessageItem
+import com.github.pablo.warrenchatdemo.utils.logD
 import com.github.pablo.warrenchatdemo.views.base.*
 import com.github.pablo.warrenchatdemo.views.widgets.SmoothScrollLayoutManager
 import java.util.*
@@ -50,10 +51,17 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     private fun setupRecyclerView() {
-        adapter = ChatAdapter {
+        adapter = ChatAdapter()
+        adapter.setListeners({
             showBottomLayout()
             recyclerView.scrollToBottom()
-        }
+        }, {})
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver(){
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                logD("ptest onItemRangeInserted")
+                recyclerView.scrollToBottom()
+            }
+        })
         val layoutManager = SmoothScrollLayoutManager(this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter

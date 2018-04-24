@@ -5,9 +5,18 @@
     <dimen name="small_x">8dp</dimen>
     <dimen name="small">10dp</dimen>
     <dimen name="medium">12dp</dimen>
+    <dimen name="big">14dp</dimen>
+    <dimen name="big_x">16dp</dimen>
 
     <dimen name="thumb_size">48dp</dimen>
     <dimen name="chat_message_horizontal_margin">50dp</dimen>
     <dimen name="input_bar_heigth">60dp</dimen>
     <dimen name="icon_size">32dp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+
+    <dimen name="text_big">18sp</dimen>
+
+    <dimen name="chat_text_horizontal_margin">@dimen/small_x</dimen>
+    <dimen name="chat_horizontal_padding">@dimen/medium</dimen>
+    <dimen name="chat_vertical_padding">20dp</dimen>
 </resources>

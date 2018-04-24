@@ -26,4 +26,15 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="ChatMessagePadding">
+        <item name="android:paddingLeft">@dimen/chat_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/chat_horizontal_padding</item>
+        <item name="android:paddingBottom">@dimen/chat_vertical_padding</item>
+    </style>
+
+    <style name="ChatText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_big</item>
+        <item name="android:layout_marginTop">@dimen/small_xx</item>
+    </style>
+
 </resources>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    style="@style/ChatMessagePadding">
     <ImageView
         android:id="@+id/icon"
         android:layout_width="@dimen/icon_size"
@@ -15,5 +16,8 @@
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:layout_marginLeft="@dimen/chat_text_horizontal_margin"
+        android:layout_marginStart="@dimen/chat_text_horizontal_margin"
+        style="@style/ChatText"
+        tools:text="Some text"/>
 </LinearLayout>

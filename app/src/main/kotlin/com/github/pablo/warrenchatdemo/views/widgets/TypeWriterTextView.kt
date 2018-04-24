@@ -16,7 +16,7 @@ class TypeWriterTextView(context: Context, attrs: AttributeSet?, defStyleAttr: I
         const val ERASE_SPEED = 30L
     }
 
-    private var isRunning = false
+    var isRunning = false
     private val runnableQueue: Queue<Repeater> = LinkedList()
     private val runNextRunnable = Runnable { runNext() }
     var typeFinishListener: (() -> Unit)? = null

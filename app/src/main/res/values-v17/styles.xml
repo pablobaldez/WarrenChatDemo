@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ChatMessagePadding">
+        <item name="android:paddingStart">@dimen/chat_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/chat_horizontal_padding</item>
+        <item name="android:paddingBottom">@dimen/chat_vertical_padding</item>
+    </style>
+</resources>

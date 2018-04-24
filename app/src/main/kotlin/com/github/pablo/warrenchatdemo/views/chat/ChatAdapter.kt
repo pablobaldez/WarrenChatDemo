@@ -6,13 +6,19 @@ import com.github.pablo.warrenchatdemo.presenters.MessageItem
 import com.github.pablo.warrenchatdemo.views.base.BaseAdapter
 import java.util.*
 
-class ChatAdapter(private val allMessagesTypedListener: () -> Unit)
-    : BaseAdapter<MessageItem, RecyclerView.ViewHolder>(){
+class ChatAdapter : BaseAdapter<MessageItem, RecyclerView.ViewHolder>(){
 
     var messageQueue: Queue<MessageItem> = LinkedList()
     set(value) {
         field = value
         addNextMessage()
+    }
+    private var allMessagesTypedListener: (() -> Unit)? = null
+    private var oneMessageWasTypedListener:(() -> Unit)? = null
+
+    fun setListeners(allMessagesTypedListener: (() -> Unit), oneMessageWasTypedListener:(() -> Unit)) {
+        this.allMessagesTypedListener = allMessagesTypedListener
+        this.oneMessageWasTypedListener = oneMessageWasTypedListener
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -37,11 +43,10 @@ class ChatAdapter(private val allMessagesTypedListener: () -> Unit)
             is QuestionViewHolder -> {
                 item?.let {
                     holder.typeWriterTextView?.typeFinishListener = {
+                        item.animationFinished = true
                         addNextMessage()
                     }
-                    it.parts?.let { parts ->
-                        holder.bind(parts)
-                    }
+                    holder.bind(item)
                 }
             }
             is UserAnswerViewHolder -> {
@@ -57,8 +62,9 @@ class ChatAdapter(private val allMessagesTypedListener: () -> Unit)
     private fun addNextMessage() {
         if(messageQueue.isNotEmpty()) {
             add(messageQueue.poll())
+            oneMessageWasTypedListener?.invoke()
         } else {
-            allMessagesTypedListener()
+            allMessagesTypedListener?.invoke()
         }
     }
 

@@ -5,24 +5,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.pablo.warrenchatdemo.R
-import com.github.pablo.warrenchatdemo.presenters.DelayedText
+import com.github.pablo.warrenchatdemo.presenters.MessageItem
 import com.github.pablo.warrenchatdemo.views.widgets.TypeWriterTextView
 
 class QuestionViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val typeWriterTextView: TypeWriterTextView? by lazy { itemView.findViewById<TypeWriterTextView>(R.id.text) }
 
-    fun bind(parts: List<DelayedText>) {
-        if(typeWriterTextView?.text?.isNotEmpty() == true) {
-            return
-        }
-        parts.forEach { delayedText ->
-            typeWriterTextView?.let { typeWriterTextView ->
-                if(delayedText.actionWrite) {
-                    typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
-                } else {
-                    typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
-                            .erase(delayedText.text).pause(delayedText.delay)
+    fun bind(messageItem: MessageItem) {
+        if(messageItem.animationFinished) {
+            typeWriterTextView?.text = messageItem.getFullText()
+        } else {
+            if(typeWriterTextView?.isRunning == false) {
+                typeWriterTextView?.text = ""
+            }
+            messageItem.parts?.forEach { delayedText ->
+                typeWriterTextView?.let { typeWriterTextView ->
+                    if(delayedText.actionWrite) {
+                        typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
+                    } else {
+                        typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
+                                .erase(delayedText.text).pause(delayedText.delay)
+                    }
                 }
             }
         }

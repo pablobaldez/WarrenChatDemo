@@ -9,18 +9,18 @@ import android.support.transition.TransitionManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import com.github.pablo.warrenchatdemo.R
 import com.github.pablo.warrenchatdemo.injection.ActivityComponent
 import com.github.pablo.warrenchatdemo.model.InputMask
 import com.github.pablo.warrenchatdemo.presenters.ChatPresenter
 import com.github.pablo.warrenchatdemo.presenters.ChatView
 import com.github.pablo.warrenchatdemo.presenters.DelayedMessage
-import com.github.pablo.warrenchatdemo.views.base.setOnClickImeOptionsClickListener
-import com.github.pablo.warrenchatdemo.views.base.setupNameMask
-import com.github.pablo.warrenchatdemo.views.base.string
+import com.github.pablo.warrenchatdemo.views.base.*
+
 import java.util.*
 import javax.inject.Inject
 
@@ -33,8 +33,11 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recycler_view) }
     private val answerEditText by lazy { findViewById<EditText>(R.id.answer_input) }
     private val sendButton by lazy { findViewById<FloatingActionButton>(R.id.send_fab) }
-    private val opt1TextView by lazy { findViewById<View>(R.id.opt_1) }
-    private val opt2TextView by lazy { findViewById<View>(R.id.opt_2) }
+    private val opt1TextView by lazy { findViewById<TextView>(R.id.opt_1) }
+    private val opt2TextView by lazy { findViewById<TextView>(R.id.opt_2) }
+    private var currentInputMask: InputMask? = null
+    private var currentFirstAnswer: String? = null
+    private var currentSecondAnswer: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +50,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     private fun setupRecyclerView() {
-        adapter = ChatAdapter {
-            showInputArea(InputMask.NAME)
-        }
+        adapter = ChatAdapter { showBottomLayout() }
         adapter.list = ArrayList()
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -57,19 +58,21 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     private fun setupSendClickListener() {
         sendButton.setOnClickListener {
+            hideKeyboard()
             presenter?.onClickSend(answerEditText.string)
         }
         answerEditText.setOnClickImeOptionsClickListener(EditorInfo.IME_ACTION_SEND) {
+            hideKeyboard()
             presenter?.onClickSend(answerEditText.string)
         }
     }
 
     private fun setupOptionsClickListeners() {
         opt1TextView.setOnClickListener {
-            hideInputArea()
+            presenter?.onClickFirstAnswer()
         }
         opt2TextView.setOnClickListener {
-            hideInputArea()
+            presenter?.onClickSecondAnswer()
         }
     }
 
@@ -78,25 +81,48 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter?.onDetachView()
     }
 
-    override fun showMessages(messages: Queue<DelayedMessage>) {
+    override fun showMessages(messages: Queue<DelayedMessage>, mask: InputMask) {
+        currentInputMask = mask
+        adapter.messageQueue = messages
+        currentFirstAnswer = null
+        currentSecondAnswer = null
+    }
+
+    override fun showMessages(messages: Queue<DelayedMessage>, firstAnswer: String, secondAnswer: String) {
+        currentInputMask = null
+        currentFirstAnswer = firstAnswer
+        currentSecondAnswer = secondAnswer
         adapter.messageQueue = messages
     }
 
-    override fun showInputArea(inputMask: InputMask) {
-        when(inputMask) {
-            InputMask.NAME -> answerEditText.setupNameMask()
-            InputMask.INTEGER -> {}
-            InputMask.CURRENCY -> {}
-            InputMask.EMAIL -> {}
+    private fun showBottomLayout() {
+        if(currentInputMask != null) {
+            showInputLayout()
+        } else if(currentFirstAnswer != null && currentSecondAnswer != null) {
+            showOptionsLayout()
         }
-        showInputArea()
     }
 
-    private fun showInputArea() {
-        applyConstraintSet(R.layout.activity_chat_input_expanded)
+    private fun showInputLayout() {
+        currentInputMask?.let {
+            answerEditText.setText("")
+            when(it) {
+                InputMask.NAME -> answerEditText.setupNameMask()
+                InputMask.INTEGER -> answerEditText.setupIntegerMask()
+                InputMask.CURRENCY -> answerEditText.setupCurrencyMask()
+                InputMask.EMAIL -> answerEditText.setupEmailMask()
+            }
+            applyConstraintSet(R.layout.activity_chat_input_expanded)
+        }
     }
 
-    override fun hideInputArea() {
+    private fun showOptionsLayout() {
+        opt1TextView.text = currentFirstAnswer
+        opt2TextView.text = currentSecondAnswer
+        applyConstraintSet(R.layout.activity_chat_options_expanded)
+    }
+
+    override fun hideAnswerArea() {
         applyConstraintSet(R.layout.activity_chat)
     }
 
@@ -108,7 +134,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showErrorMessage() {
-        // toast de erro
+        Toast.makeText(this, R.string.message_error_generic, Toast.LENGTH_SHORT).show()
     }
 
 }

@@ -23,9 +23,29 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
     }
 
     fun onClickSend(answer: String) {
+        chatView?.hideAnswerArea()
         currentQuestion?.id?.let {
             userAnswer.put(it, answer)
             loadQuestion()
+        }
+    }
+
+    fun onClickFirstAnswer() {
+        onClickButtonAnswer(0)
+    }
+
+    fun onClickSecondAnswer() {
+        onClickButtonAnswer(1)
+    }
+
+    private fun onClickButtonAnswer(index: Int) {
+        chatView?.hideAnswerArea()
+        currentQuestion?.id?.let {
+            val answer = currentQuestion?.getButtonValue(index)
+            if(answer != null) {
+                userAnswer.put(it, answer)
+                loadQuestion()
+            }
         }
     }
 
@@ -42,17 +62,26 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
                 .map { MessageSplitter.split(it, DEFAULT_WRITER_ANIMATION_DELAY) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
-                    chatView?.hideInputArea()
+                    // TODO show loading
                 }
-                .subscribe({ list.add(it) }, { onError() }, { onCompleteQuestionLoad(list) })
-    }
-
-    private fun onError() {
-        chatView?.showErrorMessage()
+                .subscribe(
+                        { list.add(it) },
+                        { chatView?.showErrorMessage() },
+                        { onCompleteQuestionLoad(list) }
+                )
     }
 
     private fun onCompleteQuestionLoad(list: LinkedList<DelayedMessage>) {
-        chatView?.showMessages(list)
+        val inputMask = currentQuestion?.getMask()
+        if(inputMask != null) {
+            chatView?.showMessages(list, inputMask)
+        } else {
+            val firstOption = currentQuestion?.getButtonTitle(0)
+            val secondOption = currentQuestion?.getButtonTitle(1)
+            if(firstOption != null && secondOption != null) {
+                chatView?.showMessages(list, firstOption, secondOption)
+            }
+        }
     }
 
     fun onDetachView() {

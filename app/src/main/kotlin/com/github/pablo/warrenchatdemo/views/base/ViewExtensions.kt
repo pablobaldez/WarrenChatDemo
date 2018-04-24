@@ -66,6 +66,21 @@ fun EditText.setupNameMask() {
     setHint(R.string.your_name)
 }
 
+fun EditText.setupEmailMask() {
+    inputType = EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+    setHint(R.string.your_email)
+}
+
+fun EditText.setupCurrencyMask() {
+    inputType = EditorInfo.TYPE_NUMBER_FLAG_DECIMAL
+    setHint(R.string.your_email)
+}
+
+fun EditText.setupIntegerMask() {
+    inputType = EditorInfo.TYPE_NUMBER_VARIATION_NORMAL
+    hint = ""
+}
+
 fun TextView.setOnClickImeOptionsClickListener(imeId: Int, onClick: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
         if(imeId == actionId) {

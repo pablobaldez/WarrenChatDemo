@@ -11,7 +11,19 @@
     </style>
     
     <style name="Button.Black" parent="Widget.AppCompat.Button">
-        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="android:textColor">@color/selector_white</item>
+    </style>
+
+    <style name="OptionsStyle" parent="TextAppearance.AppCompat">
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:textColor">@color/selector_white</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:height">@dimen/thumb_size</item>
+        <item name="android:gravity">center</item>
     </style>
 
 </resources>

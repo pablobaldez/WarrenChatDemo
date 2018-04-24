@@ -1,11 +1,15 @@
 package com.github.pablo.warrenchatdemo.views.chat
 
 import android.os.Bundle
+import android.support.annotation.LayoutRes
+import android.support.constraint.ConstraintLayout
+import android.support.constraint.ConstraintSet
 import android.support.design.widget.FloatingActionButton
+import android.support.transition.TransitionManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.ViewTreeObserver
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import com.github.pablo.warrenchatdemo.R
@@ -25,13 +29,12 @@ class ChatActivity : AppCompatActivity(), ChatView {
     var presenter: ChatPresenter? = null @Inject set
     private lateinit var adapter: ChatAdapter
 
+    private val rootLayout by lazy { findViewById<ConstraintLayout>(R.id.root) }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recycler_view) }
     private val answerEditText by lazy { findViewById<EditText>(R.id.answer_input) }
     private val sendButton by lazy { findViewById<FloatingActionButton>(R.id.send_fab) }
-    private val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-        // TODO show input with delayed animation
-    }
-
+    private val opt1TextView by lazy { findViewById<View>(R.id.opt_1) }
+    private val opt2TextView by lazy { findViewById<View>(R.id.opt_2) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,12 +42,13 @@ class ChatActivity : AppCompatActivity(), ChatView {
         ActivityComponent.new(this).inject(this)
         setupRecyclerView()
         setupSendClickListener()
+        setupOptionsClickListeners()
         presenter?.onAttachView(this)
     }
 
     private fun setupRecyclerView() {
         adapter = ChatAdapter {
-            // todo show input area
+            showInputArea(InputMask.NAME)
         }
         adapter.list = ArrayList()
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -57,6 +61,15 @@ class ChatActivity : AppCompatActivity(), ChatView {
         }
         answerEditText.setOnClickImeOptionsClickListener(EditorInfo.IME_ACTION_SEND) {
             presenter?.onClickSend(answerEditText.string)
+        }
+    }
+
+    private fun setupOptionsClickListeners() {
+        opt1TextView.setOnClickListener {
+            hideInputArea()
+        }
+        opt2TextView.setOnClickListener {
+            hideInputArea()
         }
     }
 
@@ -76,11 +89,22 @@ class ChatActivity : AppCompatActivity(), ChatView {
             InputMask.CURRENCY -> {}
             InputMask.EMAIL -> {}
         }
-        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+        showInputArea()
+    }
+
+    private fun showInputArea() {
+        applyConstraintSet(R.layout.activity_chat_input_expanded)
     }
 
     override fun hideInputArea() {
-        // TODO descer com animação
+        applyConstraintSet(R.layout.activity_chat)
+    }
+
+    private fun applyConstraintSet(@LayoutRes layoutResId: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(this, layoutResId)
+        TransitionManager.beginDelayedTransition(rootLayout)
+        constraintSet.applyTo(rootLayout)
     }
 
     override fun showErrorMessage() {

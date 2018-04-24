@@ -14,10 +14,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@android:color/transparent"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_marginStart="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/small"
+        android:layout_marginStart="@dimen/small"
+        android:layout_marginRight="@dimen/small"
+        android:layout_marginLeft="@dimen/small"
         app:isUserChatMargin="@{chatMessage.fromUser}"
         app:isUserChatGravity="@{chatMessage.fromUser}">
 
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="200dp"
-            android:padding="@dimen/margin_small_xxx"
+            android:padding="@dimen/small_xxx"
             android:foregroundGravity="center"
             app:isUserChatBackground="@{chatMessage.fromUser}">
 
@@ -33,12 +33,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/margin_small_x"
-                android:paddingRight="@dimen/margin_small_x"
-                android:paddingEnd="@dimen/margin_small_x"
-                android:paddingStart="@dimen/margin_small_x"
-                android:paddingBottom="@dimen/margin_small"
-                android:paddingTop="@dimen/margin_small"
+                android:paddingLeft="@dimen/small_x"
+                android:paddingRight="@dimen/small_x"
+                android:paddingEnd="@dimen/small_x"
+                android:paddingStart="@dimen/small_x"
+                android:paddingBottom="@dimen/small"
+                android:paddingTop="@dimen/small"
                 app:isUserChatGravity="@{chatMessage.fromUser}"
                 tools:ignore="UseCompoundDrawables">
 
@@ -48,7 +48,7 @@
                     android:layout_height="32dp"
                     android:contentDescription="@string/app_name"
                     tools:src="@mipmap/ic_launcher"
-                    android:layout_marginBottom="@dimen/margin_medium"
+                    android:layout_marginBottom="@dimen/medium"
                     />
 
                 <com.github.pablo.warrenchatdemo.views.widgets.TypeWriterTextView

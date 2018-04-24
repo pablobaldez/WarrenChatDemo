@@ -12,8 +12,8 @@ class TypeWriterTextView(context: Context, attrs: AttributeSet?, defStyleAttr: I
     : AppCompatTextView(context, attrs, defStyleAttr){
 
     companion object {
-        const val TYPE_SPEED = 80L
-        const val ERASE_SPEED = 50L
+        const val TYPE_SPEED = 20L
+        const val ERASE_SPEED = 30L
     }
 
     private var isRunning = false

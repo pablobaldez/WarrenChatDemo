@@ -11,9 +11,9 @@ import android.widget.EditText
 import com.github.pablo.warrenchatdemo.R
 import com.github.pablo.warrenchatdemo.injection.ActivityComponent
 import com.github.pablo.warrenchatdemo.model.InputMask
-import com.github.pablo.warrenchatdemo.presenters.ChatMessage
 import com.github.pablo.warrenchatdemo.presenters.ChatPresenter
 import com.github.pablo.warrenchatdemo.presenters.ChatView
+import com.github.pablo.warrenchatdemo.presenters.DelayedMessage
 import com.github.pablo.warrenchatdemo.views.base.setOnClickImeOptionsClickListener
 import com.github.pablo.warrenchatdemo.views.base.setupNameMask
 import com.github.pablo.warrenchatdemo.views.base.string
@@ -62,12 +62,11 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter?.onDetachView()
     }
 
-    override fun addMessage(message: ChatMessage) {
-        adapter.list?.add(message)
+    override fun showMessages(messages: ArrayList<DelayedMessage>) {
+        adapter.list = messages
     }
 
     override fun showInputArea(inputMask: InputMask) {
-        adapter.notifyDataSetChanged()
         when(inputMask) {
             InputMask.NAME -> answerEditText.setupNameMask()
             InputMask.INTEGER -> {}

@@ -4,7 +4,7 @@ import com.github.pablo.warrenchatdemo.model.InputMask
 
 interface ChatView {
 
-    fun addMessage(message: ChatMessage)
+    fun showMessages(messages: ArrayList<DelayedMessage>)
 
     fun showInputArea(inputMask: InputMask)
 

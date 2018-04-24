@@ -11,6 +11,11 @@ import java.util.*
 class TypeWriterTextView(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     : AppCompatTextView(context, attrs, defStyleAttr){
 
+    companion object {
+        const val TYPE_SPEED = 80
+        const val ERASE_SPEED = 50
+    }
+
     private var isRunning = false
     private val mTypeSpeed: Long = 80
     private val mDeleteSpeed: Long = 50

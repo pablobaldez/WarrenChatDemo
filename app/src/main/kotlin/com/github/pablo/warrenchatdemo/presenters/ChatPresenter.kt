@@ -1,7 +1,6 @@
 package com.github.pablo.warrenchatdemo.presenters
 
 import com.github.pablo.warrenchatdemo.api.MessagesApi
-import com.github.pablo.warrenchatdemo.model.Message
 import com.github.pablo.warrenchatdemo.model.SuitabilityQuestion
 import com.github.pablo.warrenchatdemo.model.UserAnswer
 import io.reactivex.Observable
@@ -30,38 +29,28 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
     }
 
     private fun loadQuestion() {
+        val list = ArrayList<DelayedMessage>()
         disposable = messagesApi.answer(userAnswer)
+                .subscribeOn(Schedulers.io())
                 .flatMapObservable {
                     currentQuestion = it
                     Observable.fromIterable(it.messages)
                 }
                 .map { message -> message.value }
-                .doOnNext { MessageSplitter.split(it!!, 1000L) }
-                .subscribeOn(Schedulers.io())
+                .map { MessageSplitter.split(it, DEFAULT_WRITER_ANIMATION_DELAY) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
                     chatView?.hideInputArea()
                 }
-                .subscribe({  }, { onError() }, { onCompleteQuestionLoad() })
-    }
-
-    private fun onNext(message: Message) {
-        message.value?.let {
-            chatView?.addMessage(ChatMessage(it, it.startsWith("A")))
-        }
+                .subscribe({ list.add(it) }, { onError() }, { onCompleteQuestionLoad(list) })
     }
 
     private fun onError() {
         chatView?.showErrorMessage()
     }
 
-    private fun onCompleteQuestionLoad() {
-        currentQuestion?.inputs?.let { inputs ->
-            val mask = inputs.getOrNull(0)?.mask
-            if(mask != null) {
-                chatView?.showInputArea(mask)
-            }
-        }
+    private fun onCompleteQuestionLoad(list: ArrayList<DelayedMessage>) {
+        chatView?.showMessages(list)
     }
 
     fun onDetachView() {
@@ -69,6 +58,10 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
             disposable?.dispose()
         }
         chatView = null
+    }
+
+    companion object {
+        const val DEFAULT_WRITER_ANIMATION_DELAY = 1000L
     }
 
 }

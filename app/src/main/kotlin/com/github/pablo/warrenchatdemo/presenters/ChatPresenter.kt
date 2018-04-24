@@ -7,6 +7,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 import javax.inject.Inject
 
 class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
@@ -29,7 +30,7 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
     }
 
     private fun loadQuestion() {
-        val list = ArrayList<DelayedMessage>()
+        val list = LinkedList<DelayedMessage>()
         disposable = messagesApi.answer(userAnswer)
                 .subscribeOn(Schedulers.io())
                 .flatMapObservable {
@@ -49,7 +50,7 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
         chatView?.showErrorMessage()
     }
 
-    private fun onCompleteQuestionLoad(list: ArrayList<DelayedMessage>) {
+    private fun onCompleteQuestionLoad(list: LinkedList<DelayedMessage>) {
         chatView?.showMessages(list)
     }
 

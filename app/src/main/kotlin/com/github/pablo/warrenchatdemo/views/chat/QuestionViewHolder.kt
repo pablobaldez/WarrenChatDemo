@@ -10,14 +10,16 @@ import com.github.pablo.warrenchatdemo.views.widgets.TypeWriterTextView
 
 class QuestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private val typeWriterTextView by lazy { itemView.findViewById<TypeWriterTextView>(R.id.text) }
+    val typeWriterTextView: TypeWriterTextView? by lazy { itemView.findViewById<TypeWriterTextView>(R.id.text) }
 
     fun bind(delayedMessage: DelayedMessage) {
-        delayedMessage.parts.forEach {
-            if(it.actionWrite) {
-                typeWriterTextView.type(it.text).pause(it.delay)
-            } else {
-                typeWriterTextView.erase(it.text).pause(it.delay)
+        delayedMessage.parts.forEach { delayedText ->
+            typeWriterTextView?.let { typeWriterTextView ->
+                if(delayedText.actionWrite) {
+                    typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
+                } else {
+                    typeWriterTextView.erase(delayedText.text).pause(delayedText.delay)
+                }
             }
         }
     }

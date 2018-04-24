@@ -12,67 +12,46 @@ class TypeWriterTextView(context: Context, attrs: AttributeSet?, defStyleAttr: I
     : AppCompatTextView(context, attrs, defStyleAttr){
 
     companion object {
-        const val TYPE_SPEED = 80
-        const val ERASE_SPEED = 50
+        const val TYPE_SPEED = 80L
+        const val ERASE_SPEED = 50L
     }
 
     private var isRunning = false
-    private val mTypeSpeed: Long = 80
-    private val mDeleteSpeed: Long = 50
-    private val mPauseDelay: Long = 1000
-
-    private val mRunnableQueue: Queue<Repeater> = LinkedList()
-
-    private val mRunNextRunnable = Runnable { runNext() }
-
+    private val runnableQueue: Queue<Repeater> = LinkedList()
+    private val runNextRunnable = Runnable { runNext() }
+    var typeFinishListener: (() -> Unit)? = null
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     fun type(text: CharSequence): TypeWriterTextView {
-        return type(text, mTypeSpeed)
-    }
-
-    fun type(text: CharSequence, speed: Long): TypeWriterTextView {
-        mRunnableQueue.add(TextAdder(text, speed, mRunNextRunnable))
+        runnableQueue.add(TextAdder(text, runNextRunnable))
         if (!isRunning) runNext()
         return this
     }
 
     fun erase(text: CharSequence): TypeWriterTextView {
-        return erase(text, mDeleteSpeed)
-    }
-
-    fun erase(text: CharSequence, speed: Long): TypeWriterTextView {
-        mRunnableQueue.add(TextRemover(text, speed, mRunNextRunnable))
-
+        runnableQueue.add(TextRemover(text, runNextRunnable))
         if (!isRunning) runNext()
-
         return this
     }
 
     fun pause(millis: Long): TypeWriterTextView {
-        mRunnableQueue.add(TypePauser(millis, mRunNextRunnable))
-
+        runnableQueue.add(TypePauser(millis, runNextRunnable))
         if (!isRunning) runNext()
-
         return this
-    }
-
-    fun pause(): TypeWriterTextView {
-        return pause(mPauseDelay)
     }
 
     private fun runNext() {
         isRunning = true
-        val next = mRunnableQueue.poll()
+        val next = runnableQueue.poll()
 
         if (next == null) {
             isRunning = false
-            return
+            typeFinishListener?.invoke()
+        } else {
+            next.run()
         }
-
-        next.run()
     }
 
     private abstract inner class Repeater(private val mDoneRunnable: Runnable, private val mDelay: Long)
@@ -88,7 +67,7 @@ class TypeWriterTextView(context: Context, attrs: AttributeSet?, defStyleAttr: I
         }
     }
 
-    private inner class TextAdder(private var textToAdd: CharSequence, speed: Long, doneRunnable: Runnable) : Repeater(doneRunnable, speed) {
+    private inner class TextAdder(private var textToAdd: CharSequence, doneRunnable: Runnable) : Repeater(doneRunnable, TYPE_SPEED) {
 
         @SuppressLint("SetTextI18n")
         override fun run() {
@@ -96,18 +75,17 @@ class TypeWriterTextView(context: Context, attrs: AttributeSet?, defStyleAttr: I
                 done()
                 return
             }
-
             val first = textToAdd[0]
             textToAdd = textToAdd.subSequence(1, textToAdd.length)
-
             val text = text
+
             setText("$text$first")
             delayAndRepeat()
         }
     }
 
-    private inner class TextRemover(private var textToRemove: CharSequence, speed: Long, doneRunnable: Runnable)
-        : Repeater(doneRunnable, speed) {
+    private inner class TextRemover(private var textToRemove: CharSequence, doneRunnable: Runnable)
+        : Repeater(doneRunnable, ERASE_SPEED) {
 
         override fun run() {
             if (textToRemove.isEmpty()) {

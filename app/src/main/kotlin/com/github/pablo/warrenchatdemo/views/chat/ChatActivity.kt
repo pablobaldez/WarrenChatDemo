@@ -17,6 +17,7 @@ import com.github.pablo.warrenchatdemo.presenters.DelayedMessage
 import com.github.pablo.warrenchatdemo.views.base.setOnClickImeOptionsClickListener
 import com.github.pablo.warrenchatdemo.views.base.setupNameMask
 import com.github.pablo.warrenchatdemo.views.base.string
+import java.util.*
 import javax.inject.Inject
 
 class ChatActivity : AppCompatActivity(), ChatView {
@@ -42,7 +43,9 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     private fun setupRecyclerView() {
-        adapter = ChatAdapter()
+        adapter = ChatAdapter {
+            // todo show input area
+        }
         adapter.list = ArrayList()
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -62,8 +65,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter?.onDetachView()
     }
 
-    override fun showMessages(messages: ArrayList<DelayedMessage>) {
-        adapter.list = messages
+    override fun showMessages(messages: Queue<DelayedMessage>) {
+        adapter.messageQueue = messages
     }
 
     override fun showInputArea(inputMask: InputMask) {

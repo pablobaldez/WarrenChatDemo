@@ -16,12 +16,6 @@ class ChatViewHolder private constructor(private val binding: VhChatMessageBindi
     fun bind(chatMessage: ChatMessage, shouldShowIcon: Boolean) {
         binding.chatMessage = chatMessage
         binding.setupIcon(shouldShowIcon)
-        binding.messageText.text = "Hello "
-        binding.messageText.pause(3000)
-                .type("cruel").pause()
-                .erase("cruel").pause(500)
-                .type("nice").pause()
-                .type(" world").pause()
         binding.executePendingBindings()
     }
 

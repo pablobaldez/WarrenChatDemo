@@ -9,6 +9,7 @@ import android.support.transition.AutoTransition
 import android.support.transition.TransitionManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -45,6 +46,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+        setSupportActionBar(findViewById(R.id.toolbar))
         ActivityComponent.new(this).inject(this)
         setupRecyclerView()
         setupFinalViewClick()

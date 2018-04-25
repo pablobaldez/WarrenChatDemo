@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Warren Chat Demo</string>
+    <string name="app_name">Warren Chat</string>
     <string name="your_name">Seu nome</string>
     <string name="your_email">Seu e-mail</string>
     <string name="your_salary">Sua renda</string>

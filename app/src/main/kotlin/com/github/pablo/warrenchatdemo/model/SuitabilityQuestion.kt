@@ -1,11 +1,11 @@
 package com.github.pablo.warrenchatdemo.model
 
 class SuitabilityQuestion(
-        val id: String?,
-        val messages: ArrayList<Message>?,
-        private val buttons: ArrayList<AvailableButtonAnswer>?,
-        private val inputs: ArrayList<Input>?,
-        private val responses: ArrayList<String>?
+        val id: String? = null,
+        val messages: ArrayList<Message>? = null,
+        private val buttons: ArrayList<AvailableButtonAnswer>? = null,
+        private val inputs: ArrayList<Input>? = null,
+        private val responses: ArrayList<String>? = null
 ) {
 
     fun getButtonTitle(index: Int) = buttons?.getOrNull(index)?.labelTitle

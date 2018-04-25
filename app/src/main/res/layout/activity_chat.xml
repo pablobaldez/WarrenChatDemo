@@ -66,6 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             app:fabSize="mini"
+            app:backgroundTint="@color/red"
             android:layout_marginEnd="@dimen/small_xx"
             android:layout_marginRight="@dimen/small_xx"
             android:layout_marginLeft="@dimen/small"
@@ -119,6 +120,15 @@
             android:gravity="center"
             android:layout_gravity="center"
             style="@style/OptionsStyle"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:visibility="gone"/>
 
     </FrameLayout>
 

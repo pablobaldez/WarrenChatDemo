@@ -7,6 +7,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -72,6 +73,8 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
         disposable = messagesApi.answer(userAnswer)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
+                // for some reason i'm getting UnknownHostException sometimes
+                .retry(2) { it is UnknownHostException }
                 .flatMapObservable {
                     currentQuestion = it
                     Observable.fromIterable(it.messages)
@@ -85,9 +88,6 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    // TODO show loading
-                }
                 .subscribe(
                         { list.add(it) },
                         { chatView?.showErrorMessage() },
@@ -115,7 +115,14 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
         disposable = messagesApi.finish(userAnswer)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ chatView?.showProfile() }, { chatView?.showErrorMessage() })
+                .doOnSubscribe { chatView?.showLoading() }
+                .subscribe({
+                    chatView?.hideLoading()
+                    chatView?.showProfile()
+                }, {
+                    chatView?.hideLoading()
+                    chatView?.showErrorMessage()
+                })
     }
 
     fun onDetachView() {

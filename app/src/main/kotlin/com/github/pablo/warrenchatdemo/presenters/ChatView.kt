@@ -19,4 +19,8 @@ interface ChatView {
 
     fun showProfile()
 
+    fun showLoading()
+
+    fun hideLoading()
+
 }

@@ -3,19 +3,17 @@ package com.github.pablo.warrenchatdemo.views.base
 import android.support.v7.widget.RecyclerView
 import android.text.InputType
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
 import android.widget.EditText
 import android.widget.TextView
 import com.github.pablo.warrenchatdemo.R
-import android.view.animation.Animation
-import android.view.animation.LinearInterpolator
-import android.view.animation.AlphaAnimation
-
-
 
 fun EditText.setupNameMask() {
     inputType = InputType.TYPE_CLASS_TEXT or
-            InputType.TYPE_TEXT_FLAG_CAP_WORDS or
-            InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            InputType.TYPE_TEXT_VARIATION_PERSON_NAME or
+            InputType.TYPE_TEXT_FLAG_CAP_WORDS
     setHint(R.string.your_name)
 }
 
@@ -31,7 +29,7 @@ fun EditText.setupCurrencyMask() {
 
 fun EditText.setupIntegerMask() {
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_NORMAL
-    hint = ""
+    setHint(R.string.your_age)
 }
 
 fun TextView.setOnClickImeOptionsClickListener(imeId: Int, onClick: () -> Unit) {

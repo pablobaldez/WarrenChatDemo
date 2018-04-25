@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.github.pablo.warrenchatdemo.R
@@ -22,6 +23,8 @@ import com.github.pablo.warrenchatdemo.presenters.ChatPresenter
 import com.github.pablo.warrenchatdemo.presenters.ChatView
 import com.github.pablo.warrenchatdemo.presenters.MessageItem
 import com.github.pablo.warrenchatdemo.views.base.*
+import com.github.pablo.warrenchatdemo.views.widgets.CurrencyTextWatcher
+import com.github.pablo.warrenchatdemo.views.widgets.NonBlankTextWatcher
 import com.github.pablo.warrenchatdemo.views.widgets.SmoothScrollLayoutManager
 import java.util.*
 import javax.inject.Inject
@@ -39,6 +42,9 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private val opt2TextView by lazy { findViewById<TextView>(R.id.opt_2) }
     private val seeProfileView by lazy { findViewById<View>(R.id.see_profile) }
     private val swipeRefreshLayout by lazy { findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
+    private val progressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
+    private lateinit var currencyTextWatcher: CurrencyTextWatcher
+    private lateinit var nonBlankTextWatcher: NonBlankTextWatcher
 
     private var currentInputMask: InputMask? = null
     private var currentFirstAnswer: String? = null
@@ -83,12 +89,16 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     private fun setupSendClickListener() {
+        sendButton.isEnabled = false
         sendButton.setOnClickListener {
             onClickSend()
         }
         answerEditText.setOnClickImeOptionsClickListener(EditorInfo.IME_ACTION_SEND) {
             onClickSend()
         }
+        nonBlankTextWatcher = NonBlankTextWatcher(sendButton)
+        currencyTextWatcher = CurrencyTextWatcher(answerEditText)
+        answerEditText.addTextChangedListener(nonBlankTextWatcher)
     }
 
     private fun setupFinalViewClick() {
@@ -98,8 +108,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     private fun onClickSend() {
-        hideKeyboard()
-        presenter?.onClickSend(answerEditText.string)
+        if(answerEditText.text.isNotBlank()) {
+            hideKeyboard()
+            presenter?.onClickSend(answerEditText.string)
+        }
     }
 
     private fun setupOptionsClickListeners() {
@@ -148,6 +160,18 @@ class ChatActivity : AppCompatActivity(), ChatView {
         finish()
     }
 
+    override fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+        seeProfileView.isEnabled = false
+        seeProfileView.isClickable = false
+    }
+
+    override fun hideLoading() {
+        progressBar.visibility = View.GONE
+        seeProfileView.isEnabled = true
+        seeProfileView.isClickable = true
+    }
+
     private fun showBottomLayout() {
         when {
             isInFinalMessage -> showFinalOptionsLayout()
@@ -163,11 +187,16 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private fun showInputLayout() {
         currentInputMask?.let {
             answerEditText.setText("")
+            answerEditText.removeTextChangedListener(currencyTextWatcher)
+            sendButton.isEnabled = false
             when(it) {
                 InputMask.NAME -> answerEditText.setupNameMask()
                 InputMask.INTEGER -> answerEditText.setupIntegerMask()
-                InputMask.CURRENCY -> answerEditText.setupCurrencyMask()
                 InputMask.EMAIL -> answerEditText.setupEmailMask()
+                InputMask.CURRENCY -> {
+                    answerEditText.addTextChangedListener(currencyTextWatcher)
+                    answerEditText.setupCurrencyMask()
+                }
             }
             applyConstraintSet(R.layout.activity_chat_input_expanded)
         }

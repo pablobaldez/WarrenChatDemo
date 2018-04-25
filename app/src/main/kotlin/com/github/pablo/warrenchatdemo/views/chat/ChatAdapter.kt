@@ -3,7 +3,6 @@ package com.github.pablo.warrenchatdemo.views.chat
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.github.pablo.warrenchatdemo.presenters.MessageItem
-import com.github.pablo.warrenchatdemo.utils.logD
 import com.github.pablo.warrenchatdemo.views.base.blink
 import java.util.*
 
@@ -77,10 +76,8 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     fun add(item: MessageItem) {
         list.add(item)
         if(list.size == 1) {
-            logD("ptest notifyItemChanged")
             notifyItemChanged(0)
         } else {
-            logD("ptest notifyItemInserted")
             notifyItemInserted(list.size)
         }
 

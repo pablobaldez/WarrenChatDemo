@@ -13,9 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".views.chat.ChatActivity"
-            android:label="@string/discovering_your_profile"
             android:screenOrientation="portrait">
-            <intent-filter>
+            <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

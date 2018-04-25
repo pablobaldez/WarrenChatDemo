@@ -4,19 +4,26 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.github.pablo.warrenchatdemo.R
 import com.github.pablo.warrenchatdemo.presenters.MessageItem
 import com.github.pablo.warrenchatdemo.views.widgets.TypeWriterTextView
 
 class QuestionViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    val typeWriterTextView: TypeWriterTextView? by lazy { itemView.findViewById<TypeWriterTextView>(R.id.text) }
+    private val typeWriterTextView by lazy { itemView.findViewById<TypeWriterTextView?>(R.id.text) }
+    val iconImageView by lazy { itemView.findViewById<ImageView?>(R.id.icon) }
 
-    fun bind(messageItem: MessageItem) {
+    fun bind(messageItem: MessageItem, onAnimationFinish: () -> Unit) {
+        iconImageView?.clearAnimation()
+        typeWriterTextView?.typeFinishListener = {
+            messageItem.animationFinished = true
+            onAnimationFinish()
+        }
         when {
             messageItem.animationFinished -> typeWriterTextView?.text = messageItem.getFullText()
             messageItem.finalMessage != null -> messageItem.animateFinalMessage()
-            else -> messageItem.animate()
+            messageItem.parts != null -> messageItem.animate()
         }
     }
 

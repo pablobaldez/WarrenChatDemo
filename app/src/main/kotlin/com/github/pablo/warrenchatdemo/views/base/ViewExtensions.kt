@@ -2,9 +2,15 @@ package com.github.pablo.warrenchatdemo.views.base
 
 import android.support.v7.widget.RecyclerView
 import android.text.InputType
+import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import com.github.pablo.warrenchatdemo.R
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.AlphaAnimation
+
+
 
 fun EditText.setupNameMask() {
     inputType = InputType.TYPE_CLASS_TEXT or
@@ -42,3 +48,12 @@ fun RecyclerView.scrollToBottom() {
 }
 
 val TextView.string get() = text.toString()
+
+fun View.blink() {
+    val animation = AlphaAnimation(1f, .3f)
+    animation.duration = 1000
+    animation.interpolator = LinearInterpolator()
+    animation.repeatCount = Animation.INFINITE
+    animation.repeatMode = Animation.REVERSE
+    startAnimation(animation)
+}

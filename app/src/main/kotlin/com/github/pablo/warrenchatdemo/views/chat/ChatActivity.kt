@@ -7,9 +7,9 @@ import android.support.constraint.ConstraintSet
 import android.support.design.widget.FloatingActionButton
 import android.support.transition.AutoTransition
 import android.support.transition.TransitionManager
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -38,6 +38,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private val opt1TextView by lazy { findViewById<TextView>(R.id.opt_1) }
     private val opt2TextView by lazy { findViewById<TextView>(R.id.opt_2) }
     private val seeProfileView by lazy { findViewById<View>(R.id.see_profile) }
+    private val swipeRefreshLayout by lazy { findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
+
     private var currentInputMask: InputMask? = null
     private var currentFirstAnswer: String? = null
     private var currentSecondAnswer: String? = null
@@ -47,7 +49,9 @@ class ChatActivity : AppCompatActivity(), ChatView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
         setSupportActionBar(findViewById(R.id.toolbar))
+        setTitle(R.string.discovering_your_profile)
         ActivityComponent.new(this).inject(this)
+        setupSwipe()
         setupRecyclerView()
         setupFinalViewClick()
         setupSendClickListener()
@@ -55,12 +59,19 @@ class ChatActivity : AppCompatActivity(), ChatView {
         presenter?.onAttachView(this)
     }
 
+    private fun setupSwipe() {
+        swipeRefreshLayout.setColorSchemeResources(R.color.red, R.color.orange)
+        swipeRefreshLayout.setOnRefreshListener {
+            presenter?.onRefresh()
+        }
+    }
+
     private fun setupRecyclerView() {
         adapter = ChatAdapter()
-        adapter.setListeners({
+        adapter.allMessagesTypedListener = {
             showBottomLayout()
             recyclerView.scrollToBottom()
-        }, {})
+        }
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver(){
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 recyclerView.scrollToBottom()
@@ -106,6 +117,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showMessages(messages: Queue<MessageItem>, mask: InputMask) {
+        swipeRefreshLayout.isRefreshing = false
         currentInputMask = mask
         isInFinalMessage = false
         currentFirstAnswer = null
@@ -114,6 +126,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showMessages(messages: Queue<MessageItem>, firstAnswer: String, secondAnswer: String) {
+        swipeRefreshLayout.isRefreshing = false
         isInFinalMessage = false
         currentInputMask = null
         currentFirstAnswer = firstAnswer
@@ -122,6 +135,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showFinalMessage(message: MessageItem) {
+        swipeRefreshLayout.isRefreshing = false
         isInFinalMessage = true
         currentFirstAnswer = null
         currentSecondAnswer = null
@@ -184,6 +198,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun showErrorMessage() {
+        swipeRefreshLayout.isRefreshing = false
         Toast.makeText(this, R.string.message_error_generic, Toast.LENGTH_SHORT).show()
     }
 

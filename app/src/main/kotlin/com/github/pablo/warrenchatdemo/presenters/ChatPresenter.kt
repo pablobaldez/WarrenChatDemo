@@ -22,6 +22,10 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
         loadQuestion()
     }
 
+    fun onRefresh() {
+        loadQuestion()
+    }
+
     fun onClickSend(answer: String) {
         if(currentQuestion?.id == QUESTION_NAME_ID && answer.isNotEmpty()) {
             chatView?.showUserInitial(Character.toString(answer[0]))

@@ -73,7 +73,13 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
                     Observable.fromIterable(it.messages)
                 }
                 .map { message -> message.value }
-                .map { MessageSplitter.split(it, DEFAULT_WRITER_ANIMATION_DELAY) }
+                .map {
+                    if(currentQuestion?.id == FINAL_QUESTION_ID) {
+                        MessageItem(finalMessage = currentQuestion?.getMessageValue(0))
+                    } else {
+                        MessageSplitter.split(it, DEFAULT_WRITER_ANIMATION_DELAY)
+                    }
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
                     // TODO show loading
@@ -87,15 +93,25 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
 
     private fun onCompleteQuestionLoad(list: LinkedList<MessageItem>) {
         val inputMask = currentQuestion?.getMask()
-        if(inputMask != null) {
-            chatView?.showMessages(list, inputMask)
-        } else {
-            val firstOption = currentQuestion?.getButtonTitle(0)
-            val secondOption = currentQuestion?.getButtonTitle(1)
-            if(firstOption != null && secondOption != null) {
-                chatView?.showMessages(list, firstOption, secondOption)
+        when {
+            currentQuestion?.id == FINAL_QUESTION_ID -> chatView?.showFinalMessage(list[0])
+            inputMask != null -> chatView?.showMessages(list, inputMask)
+            else ->{
+                val firstOption = currentQuestion?.getButtonTitle(0)
+                val secondOption = currentQuestion?.getButtonTitle(1)
+                if(firstOption != null && secondOption != null) {
+                    chatView?.showMessages(list, firstOption, secondOption)
+                }
             }
         }
+    }
+
+    fun onClickSeeProfile() {
+        userAnswer.finish()
+        disposable = messagesApi.finish(userAnswer)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ chatView?.showProfile() }, { chatView?.showErrorMessage() })
     }
 
     fun onDetachView() {
@@ -108,6 +124,7 @@ class ChatPresenter @Inject constructor(private val messagesApi: MessagesApi) {
     companion object {
         const val DEFAULT_WRITER_ANIMATION_DELAY = 1000L
         const val QUESTION_NAME_ID = "question_name"
+        const val FINAL_QUESTION_ID = "final"
     }
 
 }

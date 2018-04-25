@@ -11,8 +11,12 @@ interface ChatView {
 
     fun showMessages(messages: Queue<MessageItem>, mask: InputMask)
 
+    fun showFinalMessage(message: MessageItem)
+
     fun showUserAnswer(item: MessageItem)
 
     fun showErrorMessage()
+
+    fun showProfile()
 
 }

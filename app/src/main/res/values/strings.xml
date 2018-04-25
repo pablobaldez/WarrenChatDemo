@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">Warren Chat Demo</string>
-    <string name="start">Começar</string>
-
     <string name="your_name">Seu nome</string>
     <string name="your_email">Seu e-mail</string>
     <string name="your_salary">Sua renda</string>
     <string name="message_error_generic">Algum erro aconteceu. Por favor, tente novamente</string>]
     <string name="currency_symbol">R$%s</string>
     <string name="discovering_your_profile">Descobrindo seu perfil</string>
+    <string name="see_my_profile">Ver o meu perfil</string>
+    <string name="final_message">Para descobrir seu perfil baixe o aplicativo na loja</string>
+    <string name="go_to_store">Ir para loja</string>
 </resources>

@@ -12,19 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.initial.MainActivity">
+        <activity android:name=".views.chat.ChatActivity"
+            android:label="@string/discovering_your_profile">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.chat.ChatActivity"
-            android:label="@string/discovering_your_profile"
-            android:parentActivityName=".views.initial.MainActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".views.initial.MainActivity"/>
-        </activity>
+        <activity android:name=".views.chat.ProfileActivity"
+            android:theme="@style/AppTheme.Inverse"/>
     </application>
 
 </manifest>

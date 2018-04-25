@@ -22,7 +22,8 @@ class ChatAdapter : BaseAdapter<MessageItem, RecyclerView.ViewHolder>(){
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(list.getOrNull(position)?.parts != null) {
+        val item = list.getOrNull(position)
+        return if(item?.parts != null || item?.finalMessage != null) {
             QUESTION_TYPE
         } else {
             ANSWER_TYPE

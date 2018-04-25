@@ -9,6 +9,7 @@ import android.support.transition.AutoTransition
 import android.support.transition.TransitionManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
@@ -19,7 +20,6 @@ import com.github.pablo.warrenchatdemo.model.InputMask
 import com.github.pablo.warrenchatdemo.presenters.ChatPresenter
 import com.github.pablo.warrenchatdemo.presenters.ChatView
 import com.github.pablo.warrenchatdemo.presenters.MessageItem
-import com.github.pablo.warrenchatdemo.utils.logD
 import com.github.pablo.warrenchatdemo.views.base.*
 import com.github.pablo.warrenchatdemo.views.widgets.SmoothScrollLayoutManager
 import java.util.*
@@ -36,15 +36,18 @@ class ChatActivity : AppCompatActivity(), ChatView {
     private val sendButton by lazy { findViewById<FloatingActionButton>(R.id.send_fab) }
     private val opt1TextView by lazy { findViewById<TextView>(R.id.opt_1) }
     private val opt2TextView by lazy { findViewById<TextView>(R.id.opt_2) }
+    private val seeProfileView by lazy { findViewById<View>(R.id.see_profile) }
     private var currentInputMask: InputMask? = null
     private var currentFirstAnswer: String? = null
     private var currentSecondAnswer: String? = null
+    private var isInFinalMessage = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
         ActivityComponent.new(this).inject(this)
         setupRecyclerView()
+        setupFinalViewClick()
         setupSendClickListener()
         setupOptionsClickListeners()
         presenter?.onAttachView(this)
@@ -58,7 +61,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
         }, {})
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver(){
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                logD("ptest onItemRangeInserted")
                 recyclerView.scrollToBottom()
             }
         })
@@ -73,6 +75,12 @@ class ChatActivity : AppCompatActivity(), ChatView {
         }
         answerEditText.setOnClickImeOptionsClickListener(EditorInfo.IME_ACTION_SEND) {
             onClickSend()
+        }
+    }
+
+    private fun setupFinalViewClick() {
+        seeProfileView.setOnClickListener {
+            presenter?.onClickSeeProfile()
         }
     }
 
@@ -97,24 +105,43 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     override fun showMessages(messages: Queue<MessageItem>, mask: InputMask) {
         currentInputMask = mask
-        adapter.messageQueue = messages
+        isInFinalMessage = false
         currentFirstAnswer = null
         currentSecondAnswer = null
+        adapter.messageQueue = messages
     }
 
     override fun showMessages(messages: Queue<MessageItem>, firstAnswer: String, secondAnswer: String) {
+        isInFinalMessage = false
         currentInputMask = null
         currentFirstAnswer = firstAnswer
         currentSecondAnswer = secondAnswer
         adapter.messageQueue = messages
     }
 
+    override fun showFinalMessage(message: MessageItem) {
+        isInFinalMessage = true
+        currentFirstAnswer = null
+        currentSecondAnswer = null
+        currentInputMask = null
+        adapter.add(message)
+    }
+
+    override fun showProfile() {
+        startActivity<ProfileActivity>()
+        finish()
+    }
+
     private fun showBottomLayout() {
-        if(currentInputMask != null) {
-            showInputLayout()
-        } else if(currentFirstAnswer != null && currentSecondAnswer != null) {
-            showOptionsLayout()
+        when {
+            isInFinalMessage -> showFinalOptionsLayout()
+            currentInputMask != null -> showInputLayout()
+            currentFirstAnswer != null && currentSecondAnswer != null -> showOptionsLayout()
         }
+    }
+
+    private fun showFinalOptionsLayout() {
+        applyConstraintSet(R.layout.activity_chat_final_answer_expanded)
     }
 
     private fun showInputLayout() {
@@ -143,7 +170,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun showUserAnswer(item: MessageItem) {
         applyConstraintSet(R.layout.activity_chat)
         adapter.add(item)
-        recyclerView.scrollToBottom()
     }
 
     private fun applyConstraintSet(@LayoutRes layoutResId: Int) {

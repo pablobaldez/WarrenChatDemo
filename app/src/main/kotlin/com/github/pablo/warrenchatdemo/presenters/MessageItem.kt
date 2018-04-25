@@ -6,7 +6,8 @@ package com.github.pablo.warrenchatdemo.presenters
  */
 class MessageItem(val parts: List<DelayedText>? = null,
                   val answer: String? = null,
-                  var animationFinished: Boolean = false
+                  var animationFinished: Boolean = false,
+                  var finalMessage: String? = null
 ) {
 
     fun getFullText(): String {

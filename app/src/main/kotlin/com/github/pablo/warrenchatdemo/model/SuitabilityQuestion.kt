@@ -16,4 +16,6 @@ class SuitabilityQuestion(
 
     fun getResponse() = responses?.getOrNull(0)
 
+    fun getMessageValue(index: Int) = messages?.getOrNull(index)?.value
+
 }

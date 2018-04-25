@@ -13,20 +13,33 @@ class QuestionViewHolder private constructor(itemView: View) : RecyclerView.View
     val typeWriterTextView: TypeWriterTextView? by lazy { itemView.findViewById<TypeWriterTextView>(R.id.text) }
 
     fun bind(messageItem: MessageItem) {
-        if(messageItem.animationFinished) {
-            typeWriterTextView?.text = messageItem.getFullText()
-        } else {
-            if(typeWriterTextView?.isRunning == false) {
-                typeWriterTextView?.text = ""
-            }
-            messageItem.parts?.forEach { delayedText ->
-                typeWriterTextView?.let { typeWriterTextView ->
-                    if(delayedText.actionWrite) {
-                        typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
-                    } else {
-                        typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
-                                .erase(delayedText.text).pause(delayedText.delay)
-                    }
+        when {
+            messageItem.animationFinished -> typeWriterTextView?.text = messageItem.getFullText()
+            messageItem.finalMessage != null -> messageItem.animateFinalMessage()
+            else -> messageItem.animate()
+        }
+    }
+
+    private fun MessageItem.animateFinalMessage() {
+        if(typeWriterTextView?.isRunning == false) {
+            typeWriterTextView?.text = ""
+        }
+        finalMessage?.let {
+            typeWriterTextView?.type(it)
+        }
+    }
+
+    private fun MessageItem.animate() {
+        if(typeWriterTextView?.isRunning == false) {
+            typeWriterTextView?.text = ""
+        }
+        parts?.forEach {delayedText ->
+            typeWriterTextView?.let { typeWriterTextView ->
+                if(delayedText.actionWrite) {
+                    typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
+                } else {
+                    typeWriterTextView.type(delayedText.text).pause(delayedText.delay)
+                            .erase(delayedText.text).pause(delayedText.delay)
                 }
             }
         }
